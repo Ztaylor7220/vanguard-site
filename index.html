@@ -1,839 +1,259 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#0a0806 !important;">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vanguard Letters — Dispatches from a Falling Kingdom</title>
+<meta name="description" content="A serialized fantasy experience delivered by mail. Twelve letters. Three perspectives. One falling kingdom.">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-deep: #0a0806;
-    --bg-dark: #12100d;
-    --bg-card: #1a1714;
-    --bg-card-hover: #211e19;
-    --parchment: #c4a96a;
-    --parchment-light: #d4be86;
-    --parchment-dim: #8a7444;
-    --blood: #8b2920;
-    --blood-glow: #b33a2e;
-    --text-primary: #c8bda6;
-    --text-dim: #7a7060;
-    --text-bright: #e8dcc4;
-    --ink: #2a2520;
-    --seal-red: #6b1a14;
-    --border-subtle: rgba(196, 169, 106, 0.12);
-    --border-medium: rgba(196, 169, 106, 0.25);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html {
-    scroll-behavior: smooth;
-    background: #0a0806 !important;
-  }
-
-  body {
-    background: #0a0806 !important;
-    color: var(--text-primary);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    line-height: 1.7;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
-
-  /* ── GRAIN OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    background: #0a0806;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 50% 30%, rgba(139, 41, 32, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(196, 169, 106, 0.04) 0%, transparent 60%);
-    pointer-events: none;
-  }
-
-  .hero-content {
-    max-width: 720px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero-sigil {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 2.5rem;
-    opacity: 0;
-    animation: fadeIn 1.5s ease 0.3s forwards;
-  }
-
-  .hero-sigil svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .hero-pretitle {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 0.6s forwards;
-  }
-
-  .hero h1 {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(2rem, 5.5vw, 3.6rem);
-    font-weight: 400;
-    color: var(--parchment);
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    margin-bottom: 1.8rem;
-    opacity: 0;
-    animation: fadeIn 1.5s ease 0.9s forwards;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    font-family: 'IM Fell English', serif;
-    color: var(--parchment-light);
-  }
-
-  .hero-description {
-    font-size: 1.15rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    max-width: 540px;
-    margin: 0 auto 3rem;
-    opacity: 0;
-    animation: fadeIn 1.5s ease 1.2s forwards;
-  }
-
-  .hero-cta-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    opacity: 0;
-    animation: fadeIn 1.5s ease 1.6s forwards;
-  }
-
-  .btn-primary {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--bg-deep);
-    background: var(--parchment);
-    border: none;
-    padding: 1rem 2.8rem;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .btn-primary:hover {
-    background: var(--parchment-light);
-    box-shadow: 0 0 30px rgba(196, 169, 106, 0.2);
-    transform: translateY(-1px);
-  }
-
-  .btn-ghost {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.95rem;
-    color: var(--text-dim);
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-ghost:hover { color: var(--parchment); }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    animation: fadeIn 2s ease 2.2s forwards, float 3s ease-in-out infinite 2.2s;
-  }
-
-  .scroll-indicator svg {
-    width: 20px;
-    height: 20px;
-    stroke: var(--parchment-dim);
-    opacity: 0.4;
-  }
-
-  /* ── DIVIDER ── */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 1rem 2rem;
-    color: var(--parchment-dim);
-    opacity: 0.3;
-    font-size: 0.9rem;
-    letter-spacing: 0.3em;
-    background: #0a0806;
-  }
-
-  section, footer {
-    background: #0a0806;
-  }
-
-  .section-divider::before,
-  .section-divider::after {
-    content: '';
-    width: 60px;
-    height: 1px;
-    background: var(--parchment-dim);
-  }
-
-  /* ── THE CONCEPT ── */
-  .concept {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-    text-align: center;
-    background: #0a0806;
-  }
-
-  .concept h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 2.5rem;
-  }
-
-  .concept-text {
-    font-size: 1.35rem;
-    font-weight: 300;
-    line-height: 1.9;
-    color: var(--text-primary);
-  }
-
-  .concept-text em {
-    font-family: 'IM Fell English', serif;
-    color: var(--parchment);
-    font-style: italic;
-  }
-
-  /* ── LETTER PREVIEW ── */
-  .letter-preview {
-    max-width: 600px;
-    margin: 2rem auto 0;
-    padding: 4rem 2rem;
-    position: relative;
-  }
-
-  .letter-paper {
-    background: linear-gradient(175deg, #1e1b16 0%, #17140f 100%);
-    border: 1px solid var(--border-subtle);
-    padding: 3rem 2.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .letter-paper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--parchment-dim), transparent);
-    opacity: 0.3;
-  }
-
-  .letter-date {
-    font-family: 'IM Fell English', serif;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
-    font-style: italic;
-  }
-
-  .letter-body {
-    font-family: 'IM Fell English', serif;
-    font-size: 1.05rem;
-    line-height: 1.9;
-    color: var(--text-primary);
-    font-style: italic;
-  }
-
-  .letter-body p { margin-bottom: 1rem; }
-
-  .letter-body .redacted {
-    background: var(--parchment-dim);
-    color: var(--parchment-dim);
-    padding: 0 0.3em;
-    border-radius: 2px;
-    cursor: default;
-    user-select: none;
-    transition: all 0.3s ease;
-    font-style: normal;
-  }
-
-  .letter-body .redacted:hover {
-    background: rgba(196, 169, 106, 0.3);
-    color: rgba(196, 169, 106, 0.3);
-  }
-
-  .letter-sig {
-    font-family: 'IM Fell English', serif;
-    font-size: 1rem;
-    color: var(--parchment-dim);
-    margin-top: 1.5rem;
-    font-style: italic;
-  }
-
-  .letter-caption {
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    font-style: italic;
-  }
-
-  .letter-caption a {
-    color: var(--parchment);
-    text-decoration: none;
-    border-bottom: 1px solid var(--border-subtle);
-    transition: border-color 0.3s;
-  }
-
-  .letter-caption a:hover {
-    border-color: var(--parchment);
-  }
-
-  /* ── TRACKS ── */
-  .tracks {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-  }
-
-  .tracks-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-
-  .tracks-header h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 1.5rem;
-  }
-
-  .tracks-header p {
-    font-size: 1.15rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    max-width: 520px;
-    margin: 0 auto;
-  }
-
-  .tracks-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .track-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    padding: 2.5rem 2rem;
-    position: relative;
-    transition: all 0.5s ease;
-    overflow: hidden;
-  }
-
-  .track-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    transition: opacity 0.5s ease;
-  }
-
-  .track-card:hover {
-    border-color: var(--border-medium);
-    background: var(--bg-card-hover);
-    transform: translateY(-3px);
-  }
-
-  .track-card.witness::before { background: var(--parchment-dim); opacity: 0.5; }
-  .track-card.witness:hover::before { opacity: 1; }
-  .track-card.soldier::before { background: var(--blood); opacity: 0.5; }
-  .track-card.soldier:hover::before { opacity: 1; }
-  .track-card.shadow::before { background: #3a3a5c; opacity: 0.5; }
-  .track-card.shadow:hover::before { opacity: 1; }
-
-  .track-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-
-  .track-card.witness .track-label { color: var(--parchment-dim); }
-  .track-card.soldier .track-label { color: var(--blood-glow); }
-  .track-card.shadow .track-label { color: #6a6a9a; }
-
-  .track-name {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-bottom: 0.5rem;
-  }
-
-  .track-role {
-    font-family: 'IM Fell English', serif;
-    font-size: 0.95rem;
-    font-style: italic;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
-  }
-
-  .track-description {
-    font-size: 0.95rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    line-height: 1.7;
-    margin-bottom: 2rem;
-  }
-
-  .track-meta {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-subtle);
-  }
-
-  .track-meta strong {
-    color: var(--text-primary);
-    font-weight: 500;
-  }
-
-  .track-card.witness .track-cta {
-    display: inline-block;
-    margin-top: 1rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--parchment);
-    text-decoration: none;
-    border-bottom: 1px solid var(--parchment-dim);
-    padding-bottom: 2px;
-    transition: all 0.3s ease;
-  }
-
-  .track-card.witness .track-cta:hover {
-    border-color: var(--parchment);
-  }
-
-  /* ── HOW IT WORKS ── */
-  .how-it-works {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-  }
-
-  .how-it-works h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .step {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 3rem;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    color: var(--parchment-dim);
-    opacity: 0.4;
-    flex-shrink: 0;
-    width: 40px;
-    text-align: right;
-    line-height: 1.3;
-  }
-
-  .step-content h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.03em;
-  }
-
-  .step-content p {
-    font-size: 0.95rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
-
-  /* ── PRICING ── */
-  .pricing {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-  }
-
-  .pricing-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-
-  .pricing-header h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 1.5rem;
-  }
-
-  .pricing-header p {
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .price-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    padding: 2.5rem 2rem;
-    text-align: center;
-    transition: all 0.4s ease;
-  }
-
-  .price-card:hover {
-    border-color: var(--border-medium);
-    transform: translateY(-2px);
-  }
-
-  .price-card.featured {
-    border-color: var(--parchment-dim);
-    position: relative;
-  }
-
-  .price-card.featured::after {
-    content: 'RECOMMENDED';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Cinzel', serif;
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
-    color: var(--bg-deep);
-    background: var(--parchment-dim);
-    padding: 3px 14px;
-  }
-
-  .price-tier {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 1.5rem;
-  }
-
-  .price-amount {
-    font-family: 'Cinzel', serif;
-    font-size: 2.5rem;
-    font-weight: 300;
-    color: var(--parchment);
-    margin-bottom: 0.25rem;
-  }
-
-  .price-amount span {
-    font-size: 1rem;
-    color: var(--text-dim);
-  }
-
-  .price-period {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-bottom: 2rem;
-  }
-
-  .price-features {
-    text-align: left;
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    line-height: 2;
-    margin-bottom: 2rem;
-    font-weight: 300;
-  }
-
-  .price-features .check {
-    color: var(--parchment-dim);
-    margin-right: 0.5rem;
-  }
-
-  .price-card .btn-primary {
-    width: 100%;
-    font-size: 0.65rem;
-    padding: 0.85rem 1.5rem;
-  }
-
-  .price-card .btn-outline {
-    width: 100%;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    background: none;
-    border: 1px solid var(--border-medium);
-    padding: 0.85rem 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-  }
-
-  .price-card .btn-outline:hover {
-    border-color: var(--parchment);
-    color: var(--parchment);
-  }
-
-  .pricing-note {
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    font-style: italic;
-    margin-top: 1rem;
-    opacity: 0.6;
-  }
-
-  /* ── EMAIL CAPTURE ── */
-  .email-capture {
-    max-width: 580px;
-    margin: 0 auto;
-    padding: 6rem 2rem;
-    text-align: center;
-  }
-
-  .email-capture h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.8rem;
-    font-weight: 400;
-    color: var(--parchment);
-    margin-bottom: 1rem;
-    line-height: 1.3;
-  }
-
-  .email-capture p {
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    margin-bottom: 2.5rem;
-  }
-
-  .email-form {
-    display: flex;
-    gap: 0;
-    max-width: 460px;
-    margin: 0 auto;
-  }
-
-  .email-form input {
-    flex: 1;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    background: var(--bg-card);
-    border: 1px solid var(--border-medium);
-    border-right: none;
-    padding: 0.9rem 1.2rem;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-
-  .email-form input::placeholder {
-    color: var(--text-dim);
-    opacity: 0.5;
-  }
-
-  .email-form input:focus {
-    border-color: var(--parchment-dim);
-  }
-
-  .email-form button {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--bg-deep);
-    background: var(--parchment);
-    border: 1px solid var(--parchment);
-    padding: 0.9rem 1.8rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-
-  .email-form button:hover {
-    background: var(--parchment-light);
-  }
-
-  .email-privacy {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 1rem;
-    opacity: 0.5;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 3rem 2rem;
-    text-align: center;
-    border-top: 1px solid var(--border-subtle);
-  }
-
-  .footer-brand {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--parchment-dim);
-    opacity: 0.4;
-    margin-bottom: 0.75rem;
-  }
-
-  .footer-tagline {
-    font-family: 'IM Fell English', serif;
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--text-dim);
-    opacity: 0.3;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
-  }
-
-  /* ── SCROLL REVEALS ── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 820px) {
-    .tracks-grid, .pricing-grid {
-      grid-template-columns: 1fr;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .step { gap: 1.2rem; }
-
-    .email-form {
-      flex-direction: column;
-    }
-
-    .email-form input {
-      border-right: 1px solid var(--border-medium);
-      border-bottom: none;
-    }
-  }
+:root {
+  --bg-deep: #0a0806;
+  --bg-dark: #12100d;
+  --bg-card: #1a1714;
+  --bg-card-hover: #211e19;
+  --parchment: #c4a96a;
+  --parchment-light: #d4be86;
+  --parchment-dim: #8a7444;
+  --blood: #8b2920;
+  --blood-glow: #b33a2e;
+  --text-primary: #c8bda6;
+  --text-dim: #7a7060;
+  --text-bright: #e8dcc4;
+  --ink: #2a2520;
+  --seal-red: #6b1a14;
+  --border-subtle: rgba(196,169,106,0.12);
+  --border-medium: rgba(196,169,106,0.25);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;background:#0a0806;}
+body{background:#0a0806;color:var(--text-primary);font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.7;overflow-x:hidden;min-height:100vh;}
+
+/* VIGNETTE */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,transparent 50%,rgba(0,0,0,0.6) 100%);}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* PARTICLE CANVAS */
+#ember-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(196,169,106,0.06) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity 0.3s;z-index:1;opacity:0;}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 30%,rgba(139,41,32,0.1) 0%,transparent 70%),
+  radial-gradient(ellipse 80% 50% at 50% 100%,rgba(196,169,106,0.05) 0%,transparent 60%);}
+.hero-content{max-width:720px;position:relative;z-index:2;}
+
+/* SIGIL */
+.hero-sigil{width:80px;height:80px;margin:0 auto 2.5rem;opacity:0;animation:fadeIn 1s ease 0.3s forwards;}
+.hero-sigil svg{width:100%;height:100%;}
+.sigil-path{stroke-dasharray:500;stroke-dashoffset:500;animation:drawSigil 3s ease 0.5s forwards;}
+.sigil-inner{stroke-dasharray:300;stroke-dashoffset:300;animation:drawSigilInner 2.5s ease 1s forwards;}
+.sigil-center{opacity:0;animation:pulseIn 1.5s ease 2.5s forwards;}
+@keyframes drawSigil{to{stroke-dashoffset:0;}}
+@keyframes drawSigilInner{to{stroke-dashoffset:0;}}
+@keyframes pulseIn{0%{opacity:0;filter:drop-shadow(0 0 0 transparent);}50%{opacity:0.8;filter:drop-shadow(0 0 12px rgba(196,169,106,0.4));}100%{opacity:0.5;filter:drop-shadow(0 0 6px rgba(196,169,106,0.15));}}
+
+.hero-pretitle{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:1.5rem;opacity:0;animation:fadeIn 1.2s ease 0.6s forwards;}
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(2rem,5.5vw,3.6rem);font-weight:400;color:var(--parchment);line-height:1.2;letter-spacing:0.02em;margin-bottom:1.8rem;}
+.hero h1 .word{display:inline-block;opacity:0;transform:translateY(15px);animation:wordReveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards;}
+.hero h1 em{font-style:italic;font-family:'IM Fell English',serif;color:var(--parchment-light);}
+@keyframes wordReveal{to{opacity:1;transform:translateY(0);}}
+.hero-description{font-size:1.15rem;font-weight:300;color:var(--text-dim);max-width:540px;margin:0 auto 3rem;opacity:0;animation:fadeIn 1.5s ease 2s forwards;}
+.hero-cta-group{display:flex;flex-direction:column;align-items:center;gap:1rem;opacity:0;animation:fadeIn 1.5s ease 2.3s forwards;}
+
+/* BUTTONS */
+.btn-primary{font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--bg-deep);background:var(--parchment);border:none;padding:1rem 2.8rem;cursor:pointer;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);text-decoration:none;display:inline-block;position:relative;overflow:hidden;}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transform:translateX(-100%);transition:transform 0.6s;}
+.btn-primary:hover{background:var(--parchment-light);box-shadow:0 0 40px rgba(196,169,106,0.25);transform:translateY(-2px);}
+.btn-primary:hover::after{transform:translateX(100%);}
+.btn-ghost{font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--text-dim);background:none;border:none;cursor:pointer;text-decoration:none;padding:0.5rem 1rem;transition:all 0.3s;letter-spacing:0.05em;}
+.btn-ghost:hover{color:var(--parchment);}
+
+.scroll-indicator{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);opacity:0;animation:fadeIn 2s ease 3s forwards,float 3s ease-in-out infinite 3s;}
+.scroll-indicator svg{width:20px;height:20px;stroke:var(--parchment-dim);opacity:0.4;}
+
+/* DIVIDER */
+.section-divider{display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1rem 2rem;color:var(--parchment-dim);opacity:0.3;font-size:0.9rem;letter-spacing:0.3em;position:relative;z-index:1;}
+.section-divider::before,.section-divider::after{content:'';width:0;height:1px;background:var(--parchment-dim);transition:width 1s cubic-bezier(0.16,1,0.3,1);}
+.section-divider.visible::before,.section-divider.visible::after{width:60px;}
+
+section,footer{position:relative;z-index:1;}
+
+/* CONCEPT */
+.concept{max-width:680px;margin:0 auto;padding:5rem 2rem;text-align:center;}
+.concept h2{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:2.5rem;}
+.concept-text{font-size:1.35rem;font-weight:300;line-height:1.9;color:var(--text-primary);}
+.concept-text em{font-family:'IM Fell English',serif;color:var(--parchment);font-style:italic;}
+
+/* LETTER PREVIEW */
+.letter-preview{max-width:600px;margin:2rem auto 0;padding:4rem 2rem;position:relative;perspective:1200px;}
+.letter-paper{background:linear-gradient(175deg,#1e1b16 0%,#17140f 100%);border:1px solid var(--border-subtle);padding:3rem 2.5rem;position:relative;overflow:hidden;
+  transform-origin:top center;transform:rotateX(3deg) scale(0.97);opacity:0.7;
+  transition:transform 1.2s cubic-bezier(0.16,1,0.3,1),opacity 1s ease,box-shadow 1s ease;}
+.letter-preview.visible .letter-paper{transform:rotateX(0) scale(1);opacity:1;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.letter-paper::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--parchment-dim),transparent);opacity:0.3;}
+.letter-paper::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.03'/%3E%3C/svg%3E");}
+.letter-date{font-family:'IM Fell English',serif;font-size:0.85rem;color:var(--text-dim);margin-bottom:1.5rem;font-style:italic;}
+.letter-body{font-family:'IM Fell English',serif;font-size:1.05rem;line-height:1.9;color:var(--text-primary);font-style:italic;}
+.letter-body p{margin-bottom:1rem;}
+.letter-body .redacted{background:var(--parchment-dim);color:var(--parchment-dim);padding:0 0.3em;border-radius:2px;cursor:default;user-select:none;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);font-style:normal;}
+.letter-body .redacted:hover{background:rgba(196,169,106,0.15);color:var(--parchment);text-shadow:0 0 8px rgba(196,169,106,0.3);}
+.letter-sig{font-family:'IM Fell English',serif;font-size:1rem;color:var(--parchment-dim);margin-top:1.5rem;font-style:italic;}
+.letter-caption{text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-dim);font-style:italic;}
+.letter-caption a{color:var(--parchment);text-decoration:none;border-bottom:1px solid var(--border-subtle);transition:border-color 0.3s;}
+.letter-caption a:hover{border-color:var(--parchment);}
+
+/* WAX SEAL */
+.wax-seal{position:absolute;bottom:-20px;right:30px;width:64px;height:64px;cursor:pointer;z-index:2;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));}
+.wax-seal:hover{transform:scale(1.1) rotate(-5deg);}
+.wax-seal:active{transform:scale(0.95);}
+
+/* TRACKS */
+.tracks{max-width:1100px;margin:0 auto;padding:5rem 2rem;}
+.tracks-header{text-align:center;margin-bottom:4rem;}
+.tracks-header h2{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:1.5rem;}
+.tracks-header p{font-size:1.15rem;font-weight:300;color:var(--text-dim);max-width:520px;margin:0 auto;}
+.tracks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.track-card{background:var(--bg-card);border:1px solid var(--border-subtle);padding:2.5rem 2rem;position:relative;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);overflow:hidden;opacity:0;transform:translateY(30px);}
+.track-card.visible{opacity:1;transform:translateY(0);}
+.track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity 0.5s;}
+.track-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.5s;pointer-events:none;}
+.track-card:hover{border-color:var(--border-medium);background:var(--bg-card-hover);transform:translateY(-4px);}
+.track-card:hover::after{opacity:1;}
+.track-card.witness::before{background:var(--parchment-dim);opacity:0.5;}
+.track-card.witness:hover::before{opacity:1;}
+.track-card.witness::after{background:radial-gradient(ellipse at 50% 0%,rgba(196,169,106,0.06),transparent 70%);}
+.track-card.soldier::before{background:var(--blood);opacity:0.5;}
+.track-card.soldier:hover::before{opacity:1;}
+.track-card.soldier::after{background:radial-gradient(ellipse at 50% 0%,rgba(139,41,32,0.08),transparent 70%);}
+.track-card.shadow::before{background:#3a3a5c;opacity:0.5;}
+.track-card.shadow:hover::before{opacity:1;}
+.track-card.shadow::after{background:radial-gradient(ellipse at 50% 0%,rgba(58,58,92,0.08),transparent 70%);}
+.track-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.75rem;}
+.track-card.witness .track-label{color:var(--parchment-dim);}
+.track-card.soldier .track-label{color:var(--blood-glow);}
+.track-card.shadow .track-label{color:#6a6a9a;}
+.track-name{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:600;color:var(--text-bright);margin-bottom:0.5rem;}
+.track-role{font-family:'IM Fell English',serif;font-size:0.95rem;font-style:italic;color:var(--text-dim);margin-bottom:1.5rem;}
+.track-description{font-size:0.95rem;font-weight:300;color:var(--text-dim);line-height:1.7;margin-bottom:2rem;}
+.track-meta{font-size:0.8rem;color:var(--text-dim);padding-top:1.5rem;border-top:1px solid var(--border-subtle);}
+.track-meta strong{color:var(--text-primary);font-weight:500;}
+.track-card.witness .track-cta{display:inline-block;margin-top:1rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--parchment);text-decoration:none;border-bottom:1px solid var(--parchment-dim);padding-bottom:2px;transition:all 0.3s;}
+.track-card.witness .track-cta:hover{border-color:var(--parchment);}
+
+/* HOW IT WORKS */
+.how-it-works{max-width:680px;margin:0 auto;padding:5rem 2rem;}
+.how-it-works h2{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:3rem;text-align:center;}
+.step{display:flex;gap:2rem;margin-bottom:3rem;align-items:flex-start;}
+.step-num{font-family:'Cinzel',serif;font-size:2rem;font-weight:300;color:var(--parchment-dim);opacity:0.4;flex-shrink:0;width:40px;text-align:right;line-height:1.3;}
+.step-content h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--text-bright);margin-bottom:0.5rem;letter-spacing:0.03em;}
+.step-content p{font-size:0.95rem;font-weight:300;color:var(--text-dim);line-height:1.7;}
+
+/* PRICING */
+.pricing{max-width:900px;margin:0 auto;padding:5rem 2rem;}
+.pricing-header{text-align:center;margin-bottom:4rem;}
+.pricing-header h2{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:1.5rem;}
+.pricing-header p{font-size:1.05rem;font-weight:300;color:var(--text-dim);max-width:480px;margin:0 auto;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem;}
+.price-card{background:var(--bg-card);border:1px solid var(--border-subtle);padding:2.5rem 2rem;text-align:center;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);opacity:0;transform:translateY(30px);}
+.price-card.visible{opacity:1;transform:translateY(0);}
+.price-card:hover{border-color:var(--border-medium);transform:translateY(-3px);}
+.price-card.featured{border-color:var(--parchment-dim);position:relative;}
+.price-card.featured::after{content:'RECOMMENDED';position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.25em;color:var(--bg-deep);background:var(--parchment-dim);padding:3px 14px;}
+.price-tier{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--parchment-dim);margin-bottom:1.5rem;}
+.price-amount{font-family:'Cinzel',serif;font-size:2.5rem;font-weight:300;color:var(--parchment);margin-bottom:0.25rem;}
+.price-amount span{font-size:1rem;color:var(--text-dim);}
+.price-period{font-size:0.85rem;color:var(--text-dim);margin-bottom:2rem;}
+.price-features{text-align:left;font-size:0.9rem;color:var(--text-dim);line-height:2;margin-bottom:2rem;font-weight:300;}
+.price-features .check{color:var(--parchment-dim);margin-right:0.5rem;}
+.price-card .btn-primary{width:100%;font-size:0.65rem;padding:0.85rem 1.5rem;}
+.price-card .btn-outline{width:100%;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--parchment-dim);background:none;border:1px solid var(--border-medium);padding:0.85rem 1.5rem;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;text-align:center;}
+.price-card .btn-outline:hover{border-color:var(--parchment);color:var(--parchment);}
+.pricing-note{text-align:center;font-size:0.85rem;color:var(--text-dim);font-style:italic;margin-top:1rem;opacity:0.6;}
+
+/* EMAIL CAPTURE */
+.email-capture{max-width:580px;margin:0 auto;padding:6rem 2rem;text-align:center;}
+.email-capture h2{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:400;color:var(--parchment);margin-bottom:1rem;line-height:1.3;
+  animation:breathe 4s ease-in-out infinite;}
+@keyframes breathe{0%,100%{text-shadow:0 0 10px rgba(196,169,106,0.1);}50%{text-shadow:0 0 25px rgba(196,169,106,0.2);}}
+.email-capture p{font-size:1.05rem;font-weight:300;color:var(--text-dim);margin-bottom:2.5rem;}
+.email-form{display:flex;gap:0;max-width:460px;margin:0 auto;}
+.email-form input{flex:1;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--text-primary);background:var(--bg-card);border:1px solid var(--border-medium);border-right:none;padding:0.9rem 1.2rem;outline:none;transition:border-color 0.3s,box-shadow 0.3s;}
+.email-form input::placeholder{color:var(--text-dim);opacity:0.5;}
+.email-form input:focus{border-color:var(--parchment-dim);box-shadow:0 0 20px rgba(196,169,106,0.1);}
+.email-form button{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--bg-deep);background:var(--parchment);border:1px solid var(--parchment);padding:0.9rem 1.8rem;cursor:pointer;transition:all 0.3s;white-space:nowrap;}
+.email-form button:hover{background:var(--parchment-light);box-shadow:0 0 30px rgba(196,169,106,0.2);}
+.email-privacy{font-size:0.75rem;color:var(--text-dim);margin-top:1rem;opacity:0.5;}
+
+/* FOOTER */
+footer{padding:3rem 2rem;text-align:center;border-top:1px solid var(--border-subtle);}
+.footer-brand{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--parchment-dim);opacity:0.4;margin-bottom:0.75rem;}
+.footer-tagline{font-family:'IM Fell English',serif;font-size:0.85rem;font-style:italic;color:var(--text-dim);opacity:0.3;}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(25px);transition:opacity 1s cubic-bezier(0.16,1,0.3,1),transform 1s cubic-bezier(0.16,1,0.3,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* FOG LAYERS */
+.fog-layer{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.fog-1{background:linear-gradient(180deg,transparent 0%,rgba(196,169,106,0.015) 40%,transparent 60%);transform:translateY(0);animation:fogDrift1 20s ease-in-out infinite;}
+.fog-2{background:linear-gradient(180deg,transparent 30%,rgba(139,41,32,0.02) 50%,transparent 70%);animation:fogDrift2 25s ease-in-out infinite;}
+@keyframes fogDrift1{0%,100%{opacity:0.5;transform:translateY(0);}50%{opacity:1;transform:translateY(-30px);}}
+@keyframes fogDrift2{0%,100%{opacity:0.3;transform:translateY(10px);}50%{opacity:0.7;transform:translateY(-20px);}}
+
+/* RESPONSIVE */
+@media(max-width:820px){
+  .tracks-grid,.pricing-grid{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto;}
+  .step{gap:1.2rem;}
+  .email-form{flex-direction:column;}
+  .email-form input{border-right:1px solid var(--border-medium);border-bottom:none;}
+  .hero-glow{display:none;}
+}
 </style>
 </head>
-<body style="background:#0a0806 !important;">
+<body>
+
+<!-- FOG LAYERS -->
+<div class="fog-layer fog-1"></div>
+<div class="fog-layer fog-2"></div>
+
+<!-- EMBER CANVAS -->
+<canvas id="ember-canvas"></canvas>
 
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero">
+  <div class="hero-glow" id="heroGlow"></div>
   <div class="hero-content">
     <div class="hero-sigil">
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M32 4 L44 20 L60 32 L44 44 L32 60 L20 44 L4 32 L20 20 Z" stroke="#8a7444" stroke-width="1" fill="none" opacity="0.6"/>
-        <path d="M32 14 L40 24 L50 32 L40 40 L32 50 L24 40 L14 32 L24 24 Z" stroke="#8a7444" stroke-width="0.5" fill="none" opacity="0.3"/>
-        <circle cx="32" cy="32" r="3" fill="#8a7444" opacity="0.5"/>
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="sigil-path" d="M40 4 L52 18 L68 24 L62 40 L68 56 L52 62 L40 76 L28 62 L12 56 L18 40 L12 24 L28 18 Z" stroke="#8a7444" stroke-width="1" fill="none"/>
+        <path class="sigil-inner" d="M40 16 L48 26 L58 30 L54 40 L58 50 L48 54 L40 64 L32 54 L22 50 L26 40 L22 30 L32 26 Z" stroke="#8a7444" stroke-width="0.5" fill="none"/>
+        <circle class="sigil-center" cx="40" cy="40" r="3" fill="#8a7444"/>
+        <line class="sigil-inner" x1="40" y1="16" x2="40" y2="64" stroke="#8a7444" stroke-width="0.3" opacity="0.3"/>
+        <line class="sigil-inner" x1="22" y1="40" x2="58" y2="40" stroke="#8a7444" stroke-width="0.3" opacity="0.3"/>
       </svg>
     </div>
     <div class="hero-pretitle">A Serialized Fantasy Experience</div>
-    <h1>A war is coming<br>to <em>Valdenmarch</em></h1>
+    <h1>
+      <span class="word" style="animation-delay:0.9s">A</span>
+      <span class="word" style="animation-delay:1.0s">war</span>
+      <span class="word" style="animation-delay:1.1s">is</span>
+      <span class="word" style="animation-delay:1.2s">coming</span><br>
+      <span class="word" style="animation-delay:1.4s">to</span>
+      <span class="word" style="animation-delay:1.6s"><em>Valdenmarch</em></span>
+    </h1>
     <p class="hero-description">
       Twelve letters. Three perspectives. One falling kingdom.<br>
       Their stories arrive in your mailbox — the real one.
@@ -851,7 +271,7 @@
 </section>
 
 <!-- ══════════════ CONCEPT ══════════════ -->
-<div class="section-divider">✦</div>
+<div class="section-divider reveal">✦</div>
 
 <section class="concept reveal">
   <h2>The Premise</h2>
@@ -883,6 +303,15 @@
       to whom. The seal is <span class="redacted">one I don't recognize</span>.</p>
     </div>
     <div class="letter-sig">— W.</div>
+    <!-- WAX SEAL -->
+    <div class="wax-seal">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="#6b1a14" stroke="#4a110e" stroke-width="2"/>
+        <circle cx="32" cy="32" r="22" fill="none" stroke="#8b2920" stroke-width="1" opacity="0.5"/>
+        <path d="M32 18 L36 26 L44 28 L38 34 L40 42 L32 38 L24 42 L26 34 L20 28 L28 26 Z" fill="#8b2920" opacity="0.7"/>
+        <circle cx="32" cy="32" r="4" fill="#4a110e" opacity="0.5"/>
+      </svg>
+    </div>
   </div>
   <p class="letter-caption">
     Excerpt from The Witness, Letter 3.
@@ -890,7 +319,7 @@
   </p>
 </section>
 
-<div class="section-divider">✦</div>
+<div class="section-divider reveal">✦</div>
 
 <!-- ══════════════ TRACKS ══════════════ -->
 <section class="tracks reveal" id="tracks">
@@ -901,8 +330,7 @@
   </div>
 
   <div class="tracks-grid">
-
-    <div class="track-card witness">
+    <div class="track-card witness" data-stagger="0">
       <div class="track-label">Free Track</div>
       <div class="track-name">The Witness</div>
       <div class="track-role">A cartographer mapping a kingdom that won't hold still</div>
@@ -917,7 +345,7 @@
       <a href="#signup" class="track-cta">Start reading →</a>
     </div>
 
-    <div class="track-card soldier">
+    <div class="track-card soldier" data-stagger="1">
       <div class="track-label">Paid Track</div>
       <div class="track-name">The Soldier</div>
       <div class="track-role">A bound officer fighting a war she's no longer sure she believes in</div>
@@ -932,7 +360,7 @@
       </div>
     </div>
 
-    <div class="track-card shadow">
+    <div class="track-card shadow" data-stagger="2">
       <div class="track-label">Paid Track</div>
       <div class="track-name">The Shadow</div>
       <div class="track-role">An operative whose handler may not be who they claim</div>
@@ -946,11 +374,10 @@
         Cipher keys, sealed orders, in-world intelligence documents
       </div>
     </div>
-
   </div>
 </section>
 
-<div class="section-divider">✦</div>
+<div class="section-divider reveal">✦</div>
 
 <!-- ══════════════ HOW IT WORKS ══════════════ -->
 <section class="how-it-works reveal">
@@ -988,7 +415,7 @@
   </div>
 </section>
 
-<div class="section-divider">✦</div>
+<div class="section-divider reveal">✦</div>
 
 <!-- ══════════════ PRICING ══════════════ -->
 <section class="pricing reveal" id="pricing">
@@ -999,8 +426,7 @@
   </div>
 
   <div class="pricing-grid">
-
-    <div class="price-card">
+    <div class="price-card" data-stagger="0">
       <div class="price-tier">The Witness</div>
       <div class="price-amount">Free</div>
       <div class="price-period">forever</div>
@@ -1012,7 +438,7 @@
       <a href="#signup" class="btn-outline">Start Reading</a>
     </div>
 
-    <div class="price-card featured">
+    <div class="price-card featured" data-stagger="1">
       <div class="price-tier">Single Track</div>
       <div class="price-amount"><span>$</span>99<span>/yr</span></div>
       <div class="price-period">or $9.99/month</div>
@@ -1025,7 +451,7 @@
       <button class="btn-primary">Subscribe</button>
     </div>
 
-    <div class="price-card">
+    <div class="price-card" data-stagger="2">
       <div class="price-tier">Both Tracks</div>
       <div class="price-amount"><span>$</span>179<span>/yr</span></div>
       <div class="price-period">save $19 vs. separate</div>
@@ -1037,7 +463,6 @@
       </div>
       <button class="btn-primary">Subscribe</button>
     </div>
-
   </div>
 
   <p class="pricing-note">
@@ -1045,7 +470,7 @@
   </p>
 </section>
 
-<div class="section-divider">✦</div>
+<div class="section-divider reveal">✦</div>
 
 <!-- ══════════════ EMAIL CAPTURE ══════════════ -->
 <section class="email-capture reveal" id="signup">
@@ -1064,17 +489,106 @@
   <div class="footer-tagline">The mailbox is the last uncontested attention channel. Put a story in it.</div>
 </footer>
 
-<!-- ══════════════ SCROLL REVEAL JS ══════════════ -->
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
+// ── EMBER PARTICLE SYSTEM ──
+const canvas = document.getElementById('ember-canvas');
+const ctx = canvas.getContext('2d');
+let embers = [];
+const EMBER_COUNT = 60;
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Ember {
+  constructor() { this.reset(true); }
+  reset(init) {
+    this.x = Math.random() * canvas.width;
+    this.y = init ? Math.random() * canvas.height : canvas.height + 10;
+    this.size = Math.random() * 2.5 + 0.5;
+    this.speedY = -(Math.random() * 0.6 + 0.15);
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.flickerSpeed = Math.random() * 0.02 + 0.005;
+    this.flickerOffset = Math.random() * Math.PI * 2;
+    this.life = 0;
+    this.maxLife = Math.random() * 600 + 300;
+    this.hue = Math.random() > 0.7 ? 20 : 35; // mix of orange and gold
+  }
+  update() {
+    this.x += this.speedX + Math.sin(this.life * 0.01) * 0.15;
+    this.y += this.speedY;
+    this.life++;
+    const flicker = Math.sin(this.life * this.flickerSpeed + this.flickerOffset) * 0.3 + 0.7;
+    const fadeIn = Math.min(this.life / 60, 1);
+    const fadeOut = Math.max((this.maxLife - this.life) / 80, 0);
+    this.currentOpacity = this.opacity * flicker * fadeIn * Math.min(fadeOut, 1);
+    if (this.life > this.maxLife || this.y < -20) this.reset(false);
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+    grad.addColorStop(0, `hsla(${this.hue}, 70%, 55%, ${this.currentOpacity})`);
+    grad.addColorStop(0.5, `hsla(${this.hue}, 60%, 40%, ${this.currentOpacity * 0.4})`);
+    grad.addColorStop(1, `hsla(${this.hue}, 50%, 30%, 0)`);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < EMBER_COUNT; i++) embers.push(new Ember());
+
+function animateEmbers() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  embers.forEach(e => { e.update(); e.draw(); });
+  requestAnimationFrame(animateEmbers);
+}
+animateEmbers();
+
+// ── MOUSE-TRACKING GLOW ──
+const heroGlow = document.getElementById('heroGlow');
+const hero = document.querySelector('.hero');
+if (window.innerWidth > 820) {
+  hero.addEventListener('mousemove', (e) => {
+    heroGlow.style.left = e.clientX + 'px';
+    heroGlow.style.top = e.clientY + 'px';
+    heroGlow.style.opacity = '1';
+  });
+  hero.addEventListener('mouseleave', () => {
+    heroGlow.style.opacity = '0';
+  });
+}
+
+// ── SCROLL REVEAL SYSTEM ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Stagger children (track cards, price cards)
+      const staggerItems = entry.target.querySelectorAll('[data-stagger]');
+      staggerItems.forEach(item => {
+        const delay = parseInt(item.dataset.stagger) * 200;
+        setTimeout(() => item.classList.add('visible'), delay);
+      });
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Also observe track and price cards individually for re-entry
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.track-card, .price-card').forEach(el => cardObserver.observe(el));
 </script>
 
 </body>
