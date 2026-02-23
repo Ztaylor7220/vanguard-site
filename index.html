@@ -13,6 +13,8 @@
   <style>
     :root {
       --bg: #0a0806;
+      --card: #1a1714;
+      --card-hover: #211e19;
       --parchment: #c4a96a;
       --parchment-light: #d4be86;
       --parchment-dim: #8a7444;
@@ -21,8 +23,6 @@
       --text: #c8bda6;
       --text-dim: #7a7060;
       --text-bright: #e8dcc4;
-      --card: #1a1714;
-      --card-hover: #211e19;
       --border: rgba(196, 169, 106, 0.12);
       --border-med: rgba(196, 169, 106, 0.25);
     }
@@ -35,6 +35,7 @@
 
     html {
       scroll-behavior: smooth;
+      background: var(--bg);
     }
 
     body {
@@ -44,6 +45,7 @@
       font-size: 18px;
       line-height: 1.7;
       overflow-x: hidden;
+      min-height: 100vh;
     }
 
     /* GRAIN */
@@ -53,19 +55,29 @@
       inset: 0;
       pointer-events: none;
       z-index: 9999;
-      opacity: 0.03;
+      opacity: 0.035;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* EMBER CANVAS */
+    /* VIGNETTE */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+    }
+
+    /* PARTICLES */
     #ember-canvas {
       position: fixed;
       inset: 0;
-      z-index: 1;
+      z-index: 0;
       pointer-events: none;
     }
 
-    /* ─── FULLSCREEN HERO ─── */
+    /* ─── HERO (FULL BLEED IMAGE) ─── */
     .hero {
       position: relative;
       min-height: 100vh;
@@ -85,23 +97,36 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 40%;
-      filter: brightness(0.35) saturate(0.8);
+      object-position: center 60%;
+      filter: brightness(0.3) saturate(0.7);
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
       z-index: 1;
-      background: linear-gradient(180deg, rgba(10, 8, 6, 0.3) 0%, rgba(10, 8, 6, 0.1) 30%, rgba(10, 8, 6, 0.5) 70%, rgba(10, 8, 6, 0.95) 100%),
-        linear-gradient(90deg, rgba(10, 8, 6, 0.6) 0%, transparent 30%, transparent 70%, rgba(10, 8, 6, 0.6) 100%);
+      background: linear-gradient(180deg, rgba(10, 8, 6, 0.2) 0%, rgba(10, 8, 6, 0.05) 30%, rgba(10, 8, 6, 0.4) 65%, rgba(10, 8, 6, 1) 100%),
+        linear-gradient(90deg, rgba(10, 8, 6, 0.5) 0%, transparent 25%, transparent 75%, rgba(10, 8, 6, 0.5) 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(196, 169, 106, 0.06) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      z-index: 2;
+      opacity: 0;
     }
 
     .hero-content {
+      max-width: 720px;
       position: relative;
-      z-index: 2;
+      z-index: 3;
       text-align: center;
-      max-width: 800px;
       padding: 2rem;
     }
 
@@ -110,7 +135,7 @@
       height: 80px;
       margin: 0 auto 2.5rem;
       opacity: 0;
-      animation: fadeUp 1s ease 0.3s forwards;
+      animation: fadeIn 1s ease 0.3s forwards;
     }
 
     .sigil-path {
@@ -127,7 +152,7 @@
 
     .sigil-glow {
       opacity: 0;
-      animation: glowIn 1.5s ease 2.5s forwards;
+      animation: glowPulse 1.5s ease 2.5s forwards;
     }
 
     @keyframes draw {
@@ -136,7 +161,7 @@
       }
     }
 
-    @keyframes glowIn {
+    @keyframes glowPulse {
       0% {
         opacity: 0;
         filter: drop-shadow(0 0 0 transparent);
@@ -155,31 +180,31 @@
 
     .hero-pretitle {
       font-family: 'Cinzel', serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.4em;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
       text-transform: uppercase;
       color: var(--parchment-dim);
       margin-bottom: 1.5rem;
       opacity: 0;
-      animation: fadeUp 1s ease 0.6s forwards;
+      animation: fadeIn 1.2s ease 0.6s forwards;
     }
 
     .hero h1 {
       font-family: 'Cinzel', serif;
-      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-size: clamp(2rem, 5.5vw, 3.8rem);
       font-weight: 400;
       color: var(--parchment-light);
       line-height: 1.15;
-      letter-spacing: 0.03em;
-      margin-bottom: 1.5rem;
-      text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.02em;
+      margin-bottom: 1.8rem;
+      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
     }
 
     .hero h1 .word {
       display: inline-block;
       opacity: 0;
-      transform: translateY(20px) scale(0.95);
-      filter: blur(4px);
+      transform: translateY(18px) scale(0.96);
+      filter: blur(3px);
     }
 
     .hero h1 em {
@@ -196,197 +221,196 @@
       }
     }
 
-    .hero-sub {
-      font-size: 1.25rem;
+    .hero-description {
+      font-size: 1.15rem;
       font-weight: 300;
       color: rgba(200, 189, 166, 0.7);
-      max-width: 560px;
+      max-width: 540px;
       margin: 0 auto 3rem;
       opacity: 0;
-      animation: fadeUp 1.2s ease 2.2s forwards;
-      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1.5s ease 2s forwards;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
     }
 
-    .hero-cta {
+    .hero-cta-group {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
       opacity: 0;
-      animation: fadeUp 1s ease 2.6s forwards;
+      animation: fadeIn 1.5s ease 2.3s forwards;
     }
 
-    .scroll-hint {
+    .scroll-indicator {
       position: absolute;
-      bottom: 2rem;
+      bottom: 2.5rem;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 2;
       opacity: 0;
-      animation: fadeUp 1.5s ease 3.2s forwards, bob 2.5s ease-in-out infinite 3.2s;
+      z-index: 3;
+      animation: fadeIn 2s ease 3s forwards, float 3s ease-in-out infinite 3s;
     }
 
-    .scroll-hint svg {
-      width: 24px;
-      height: 24px;
+    .scroll-indicator svg {
+      width: 20px;
+      height: 20px;
       stroke: var(--parchment-dim);
       opacity: 0.5;
     }
 
     /* ─── BUTTONS ─── */
-    .btn {
+    .btn-primary {
       font-family: 'Cinzel', serif;
       font-size: 0.8rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      padding: 1.1rem 3rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-gold {
       color: var(--bg);
       background: var(--parchment);
       border: none;
-    }
-
-    .btn-gold:hover {
-      background: var(--parchment-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 40px rgba(196, 169, 106, 0.3);
-    }
-
-    .btn-glass {
-      color: var(--parchment-dim);
-      background: rgba(196, 169, 106, 0.05);
-      border: 1px solid var(--border-med);
-      backdrop-filter: blur(4px);
-    }
-
-    .btn-glass:hover {
-      color: var(--parchment);
-      border-color: var(--parchment-dim);
-      background: rgba(196, 169, 106, 0.1);
-    }
-
-    /* ─── PHOTO-TEXT SECTIONS ─── */
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 80vh;
-      position: relative;
-      z-index: 2;
-    }
-
-    .split.reverse .split-image {
-      order: 2;
-    }
-
-    .split.reverse .split-text {
-      order: 1;
-    }
-
-    .split-image {
+      padding: 1rem 2.8rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      display: inline-block;
       position: relative;
       overflow: hidden;
     }
 
-    .split-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 8s ease;
-      will-change: transform;
-    }
-
-    .split-image:hover img {
-      transform: scale(1.05);
-    }
-
-    .split-image::after {
+    .btn-primary::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent 60%, var(--bg) 100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
     }
 
-    .split.reverse .split-image::after {
-      background: linear-gradient(270deg, transparent 60%, var(--bg) 100%);
+    .btn-primary:hover {
+      background: var(--parchment-light);
+      box-shadow: 0 0 40px rgba(196, 169, 106, 0.25);
+      transform: translateY(-2px);
     }
 
-    .split-text {
+    .btn-primary:hover::after {
+      transform: translateX(100%);
+    }
+
+    .btn-ghost {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      color: rgba(200, 189, 166, 0.5);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-ghost:hover {
+      color: var(--parchment);
+    }
+
+    /* ─── ALL CONTENT SECTIONS ─── */
+    section,
+    footer {
+      position: relative;
+      z-index: 1;
+      background: var(--bg);
+    }
+
+    /* ─── DIVIDER ─── */
+    .section-divider {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      padding: 5rem 4rem;
+      gap: 1.5rem;
+      padding: 1rem 2rem;
+      color: var(--parchment-dim);
+      opacity: 0;
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
       background: var(--bg);
       position: relative;
-      z-index: 2;
+      z-index: 1;
+      transition: opacity 1s;
     }
 
-    .split-text h2 {
+    .section-divider.visible {
+      opacity: 0.3;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      width: 0;
+      height: 1px;
+      background: var(--parchment-dim);
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+    }
+
+    .section-divider.visible::before,
+    .section-divider.visible::after {
+      width: 60px;
+    }
+
+    /* ─── CONCEPT ─── */
+    .concept {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+      text-align: center;
+      background: var(--bg);
+    }
+
+    .concept h2 {
       font-family: 'Cinzel', serif;
       font-size: 0.7rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
       color: var(--parchment-dim);
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
-    .split-text .big-text {
+    .concept-text {
       font-size: 1.35rem;
       font-weight: 300;
       line-height: 1.9;
       color: var(--text);
     }
 
-    .split-text .big-text em {
+    .concept-text em {
       font-family: 'IM Fell English', serif;
       color: var(--parchment);
       font-style: italic;
     }
 
-    /* ─── LETTER SECTION ─── */
-    .letter-section {
+    /* ─── LETTER PREVIEW ─── */
+    .letter-preview {
+      max-width: 600px;
+      margin: 2rem auto 0;
+      padding: 4rem 2rem;
       position: relative;
-      z-index: 2;
-      padding: 8rem 2rem;
-      background: var(--bg);
-      overflow: hidden;
-    }
-
-    .letter-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139, 41, 32, 0.06), transparent 70%);
-    }
-
-    .letter-wrap {
-      max-width: 620px;
-      margin: 0 auto;
-      perspective: 1000px;
+      perspective: 1200px;
     }
 
     .letter-paper {
-      background: linear-gradient(175deg, #1e1b16, #15120d);
+      background: linear-gradient(175deg, #1e1b16, #17140f);
       border: 1px solid var(--border);
-      padding: 3.5rem 3rem;
+      padding: 3rem 2.5rem;
       position: relative;
-      overflow: hidden;
-      transform: rotateX(4deg) scale(0.94);
-      opacity: 0;
-      transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      overflow: visible;
+      transform-origin: top center;
+      transform: rotateX(3deg) scale(0.97);
+      opacity: 0.7;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease, box-shadow 1s ease;
     }
 
-    .letter-paper.visible {
+    .letter-preview.visible .letter-paper {
       transform: rotateX(0) scale(1);
       opacity: 1;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     }
 
     .letter-paper::before {
@@ -397,25 +421,39 @@
       right: 0;
       height: 3px;
       background: linear-gradient(90deg, transparent, var(--parchment-dim), transparent);
-      opacity: 0.4;
+      opacity: 0.3;
     }
 
-    .letter-paper .seal-img {
+    .letter-paper::after {
+      content: '';
       position: absolute;
-      bottom: -10px;
-      right: 20px;
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
+      inset: 0;
+      pointer-events: none;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    .seal-float {
+      position: absolute;
+      bottom: -16px;
+      right: 24px;
+      width: 72px;
+      height: 72px;
+      z-index: 2;
       border-radius: 50%;
-      opacity: 0.85;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: pointer;
     }
 
-    .letter-paper .seal-img:hover {
-      transform: scale(1.15) rotate(-8deg);
+    .seal-float img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .seal-float:hover {
+      transform: scale(1.12) rotate(-6deg);
     }
 
     .letter-date {
@@ -443,19 +481,21 @@
       color: var(--parchment-dim);
       padding: 0 0.3em;
       border-radius: 2px;
-      cursor: pointer;
+      cursor: default;
       user-select: none;
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      font-style: normal;
     }
 
     .redacted:hover {
       background: rgba(196, 169, 106, 0.15);
       color: var(--parchment);
-      text-shadow: 0 0 12px rgba(196, 169, 106, 0.4);
+      text-shadow: 0 0 8px rgba(196, 169, 106, 0.3);
     }
 
     .letter-sig {
       font-family: 'IM Fell English', serif;
+      font-size: 1rem;
       color: var(--parchment-dim);
       margin-top: 1.5rem;
       font-style: italic;
@@ -463,7 +503,7 @@
 
     .letter-caption {
       text-align: center;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       font-size: 0.85rem;
       color: var(--text-dim);
       font-style: italic;
@@ -480,60 +520,11 @@
       border-color: var(--parchment);
     }
 
-    /* ─── PARALLAX IMAGE BREAK ─── */
-    .parallax-break {
-      position: relative;
-      height: 60vh;
-      overflow: hidden;
-      z-index: 2;
-    }
-
-    .parallax-break img {
-      position: absolute;
-      top: -20%;
-      left: 0;
-      width: 100%;
-      height: 140%;
-      object-fit: cover;
-      will-change: transform;
-    }
-
-    .parallax-break .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 8, 6, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .parallax-break .overlay-text {
-      font-family: 'IM Fell English', serif;
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      font-style: italic;
-      color: var(--parchment-light);
-      text-align: center;
-      max-width: 600px;
-      padding: 2rem;
-      line-height: 1.6;
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 1.2s ease;
-    }
-
-    .parallax-break .overlay-text.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
     /* ─── TRACKS ─── */
     .tracks {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 6rem 2rem;
-      position: relative;
-      z-index: 2;
+      padding: 5rem 2rem;
     }
 
     .tracks-header {
@@ -571,13 +562,13 @@
       position: relative;
       overflow: hidden;
       opacity: 0;
-      transform: translateY(40px) scale(0.96);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .track-card.visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
 
     .track-card::before {
@@ -602,7 +593,7 @@
     .track-card:hover {
       border-color: var(--border-med);
       background: var(--card-hover);
-      transform: translateY(-5px) scale(1);
+      transform: translateY(-4px);
     }
 
     .track-card:hover::after {
@@ -614,8 +605,12 @@
       opacity: 0.5;
     }
 
+    .track-card.witness:hover::before {
+      opacity: 1;
+    }
+
     .track-card.witness::after {
-      background: radial-gradient(ellipse at 50% 0%, rgba(196, 169, 106, 0.08), transparent 70%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(196, 169, 106, 0.06), transparent 70%);
     }
 
     .track-card.soldier::before {
@@ -623,8 +618,12 @@
       opacity: 0.5;
     }
 
+    .track-card.soldier:hover::before {
+      opacity: 1;
+    }
+
     .track-card.soldier::after {
-      background: radial-gradient(ellipse at 50% 0%, rgba(139, 41, 32, 0.1), transparent 70%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(139, 41, 32, 0.08), transparent 70%);
     }
 
     .track-card.shadow::before {
@@ -632,8 +631,12 @@
       opacity: 0.5;
     }
 
+    .track-card.shadow:hover::before {
+      opacity: 1;
+    }
+
     .track-card.shadow::after {
-      background: radial-gradient(ellipse at 50% 0%, rgba(58, 58, 92, 0.1), transparent 70%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(58, 58, 92, 0.08), transparent 70%);
     }
 
     .track-label {
@@ -644,15 +647,15 @@
       margin-bottom: 0.75rem;
     }
 
-    .witness .track-label {
+    .track-card.witness .track-label {
       color: var(--parchment-dim);
     }
 
-    .soldier .track-label {
+    .track-card.soldier .track-label {
       color: var(--blood-glow);
     }
 
-    .shadow .track-label {
+    .track-card.shadow .track-label {
       color: #6a6a9a;
     }
 
@@ -672,7 +675,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .track-desc {
+    .track-description {
       font-size: 0.95rem;
       font-weight: 300;
       color: var(--text-dim);
@@ -711,15 +714,13 @@
     }
 
     /* ─── HOW IT WORKS ─── */
-    .how {
+    .how-it-works {
       max-width: 680px;
       margin: 0 auto;
-      padding: 6rem 2rem;
-      position: relative;
-      z-index: 2;
+      padding: 5rem 2rem;
     }
 
-    .how h2 {
+    .how-it-works h2 {
       font-family: 'Cinzel', serif;
       font-size: 0.7rem;
       letter-spacing: 0.35em;
@@ -733,26 +734,19 @@
       display: flex;
       gap: 2rem;
       margin-bottom: 3rem;
-      opacity: 0;
-      transform: translateX(-30px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .step.visible {
-      opacity: 1;
-      transform: translateX(0);
+      align-items: flex-start;
     }
 
     .step-num {
       font-family: 'Cinzel', serif;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 300;
       color: var(--parchment-dim);
-      opacity: 0.3;
+      opacity: 0.4;
       flex-shrink: 0;
-      width: 44px;
+      width: 40px;
       text-align: right;
-      line-height: 1.2;
+      line-height: 1.3;
     }
 
     .step-content h3 {
@@ -761,6 +755,7 @@
       font-weight: 600;
       color: var(--text-bright);
       margin-bottom: 0.5rem;
+      letter-spacing: 0.03em;
     }
 
     .step-content p {
@@ -774,9 +769,7 @@
     .pricing {
       max-width: 900px;
       margin: 0 auto;
-      padding: 6rem 2rem;
-      position: relative;
-      z-index: 2;
+      padding: 5rem 2rem;
     }
 
     .pricing-header {
@@ -814,8 +807,8 @@
       padding: 2.5rem 2rem;
       text-align: center;
       opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .price-card.visible {
@@ -825,7 +818,7 @@
 
     .price-card:hover {
       border-color: var(--border-med);
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
     .price-card.featured {
@@ -889,13 +882,14 @@
       margin-right: 0.5rem;
     }
 
-    .price-card .btn {
+    .price-card .btn-primary {
       width: 100%;
       font-size: 0.65rem;
       padding: 0.85rem 1.5rem;
     }
 
     .btn-outline {
+      width: 100%;
       font-family: 'Cinzel', serif;
       font-size: 0.65rem;
       letter-spacing: 0.2em;
@@ -926,53 +920,40 @@
     }
 
     /* ─── EMAIL CAPTURE ─── */
-    .signup {
-      position: relative;
-      z-index: 2;
-      padding: 8rem 2rem;
+    .email-capture {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
       text-align: center;
-      overflow: hidden;
     }
 
-    .signup::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(196, 169, 106, 0.04), transparent);
-    }
-
-    .signup h2 {
+    .email-capture h2 {
       font-family: 'Cinzel', serif;
-      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-size: 1.8rem;
       font-weight: 400;
       color: var(--parchment);
       margin-bottom: 1rem;
       line-height: 1.3;
-      position: relative;
-      animation: glow 4s ease-in-out infinite;
+      animation: breathe 4s ease-in-out infinite;
     }
 
-    @keyframes glow {
+    @keyframes breathe {
 
       0%,
       100% {
-        text-shadow: 0 0 10px rgba(196, 169, 106, 0.08);
+        text-shadow: 0 0 10px rgba(196, 169, 106, 0.1);
       }
 
       50% {
-        text-shadow: 0 0 30px rgba(196, 169, 106, 0.2), 0 0 60px rgba(196, 169, 106, 0.05);
+        text-shadow: 0 0 25px rgba(196, 169, 106, 0.2);
       }
     }
 
-    .signup p {
+    .email-capture p {
       font-size: 1.05rem;
       font-weight: 300;
       color: var(--text-dim);
       margin-bottom: 2.5rem;
-      max-width: 520px;
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
     }
 
     .email-form {
@@ -980,7 +961,6 @@
       gap: 0;
       max-width: 460px;
       margin: 0 auto;
-      position: relative;
     }
 
     .email-form input {
@@ -991,7 +971,7 @@
       background: var(--card);
       border: 1px solid var(--border-med);
       border-right: none;
-      padding: 1rem 1.2rem;
+      padding: 0.9rem 1.2rem;
       outline: none;
       transition: all 0.3s;
     }
@@ -1003,7 +983,7 @@
 
     .email-form input:focus {
       border-color: var(--parchment-dim);
-      box-shadow: 0 0 30px rgba(196, 169, 106, 0.08);
+      box-shadow: 0 0 20px rgba(196, 169, 106, 0.1);
     }
 
     .email-form button {
@@ -1014,7 +994,7 @@
       color: var(--bg);
       background: var(--parchment);
       border: 1px solid var(--parchment);
-      padding: 1rem 2rem;
+      padding: 0.9rem 1.8rem;
       cursor: pointer;
       transition: all 0.3s;
       white-space: nowrap;
@@ -1025,12 +1005,11 @@
       box-shadow: 0 0 30px rgba(196, 169, 106, 0.2);
     }
 
-    .email-note {
+    .email-privacy {
       font-size: 0.75rem;
       color: var(--text-dim);
       margin-top: 1rem;
       opacity: 0.5;
-      position: relative;
     }
 
     /* ─── FOOTER ─── */
@@ -1038,8 +1017,6 @@
       padding: 3rem 2rem;
       text-align: center;
       border-top: 1px solid var(--border);
-      position: relative;
-      z-index: 2;
     }
 
     .footer-brand {
@@ -1052,7 +1029,7 @@
       margin-bottom: 0.75rem;
     }
 
-    .footer-tag {
+    .footer-tagline {
       font-family: 'IM Fell English', serif;
       font-size: 0.85rem;
       font-style: italic;
@@ -1060,45 +1037,11 @@
       opacity: 0.3;
     }
 
-    /* ─── DIVIDER ─── */
-    .divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 1rem 2rem;
-      color: var(--parchment-dim);
-      font-size: 0.9rem;
-      letter-spacing: 0.3em;
-      position: relative;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 1s;
-    }
-
-    .divider.visible {
-      opacity: 0.3;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      width: 0;
-      height: 1px;
-      background: var(--parchment-dim);
-      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
-    }
-
-    .divider.visible::before,
-    .divider.visible::after {
-      width: 80px;
-    }
-
     /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
+    @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(16px);
+        transform: translateY(12px);
       }
 
       to {
@@ -1107,7 +1050,7 @@
       }
     }
 
-    @keyframes bob {
+    @keyframes float {
 
       0%,
       100% {
@@ -1115,36 +1058,70 @@
       }
 
       50% {
-        transform: translateX(-50%) translateY(8px);
+        transform: translateX(-50%) translateY(6px);
+      }
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── FOG ─── */
+    .fog {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .fog-1 {
+      background: linear-gradient(180deg, transparent 0%, rgba(196, 169, 106, 0.015) 40%, transparent 60%);
+      animation: fogA 20s ease-in-out infinite;
+    }
+
+    .fog-2 {
+      background: linear-gradient(180deg, transparent 30%, rgba(139, 41, 32, 0.02) 50%, transparent 70%);
+      animation: fogB 25s ease-in-out infinite;
+    }
+
+    @keyframes fogA {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: translateY(0);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translateY(-30px);
+      }
+    }
+
+    @keyframes fogB {
+
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: translateY(10px);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform: translateY(-20px);
       }
     }
 
     /* ─── RESPONSIVE ─── */
-    @media(max-width:900px) {
-      .split {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-
-      .split-image {
-        height: 50vh;
-      }
-
-      .split.reverse .split-image {
-        order: 0;
-      }
-
-      .split.reverse .split-text {
-        order: 1;
-      }
-
-      .split-image::after {
-        background: linear-gradient(180deg, transparent 50%, var(--bg) 100%) !important;
-      }
-
-      .split-text {
-        padding: 3rem 2rem;
-      }
+    @media(max-width:820px) {
 
       .tracks-grid,
       .pricing-grid {
@@ -1152,6 +1129,10 @@
         max-width: 420px;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      .step {
+        gap: 1.2rem;
       }
 
       .email-form {
@@ -1163,338 +1144,222 @@
         border-bottom: none;
       }
 
-      .parallax-break {
-        height: 50vh;
+      .hero-glow {
+        display: none;
       }
     }
   </style>
-</head><body>
+</head>
 
-<canvas id="ember-canvas"></canvas>
+<body>
+  <div class="fog fog-1"></div>
+  <div class="fog fog-2"></div>
+  <canvas id="ember-canvas"></canvas>
 
-<!-- ═══ HERO — FULL BLEED IMAGE ═══ -->
-<section class="hero">
-  <div class="hero-bg">
-    <img src="images/seal-parchment.jpg" alt="Wax seal on aged parchment">
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <div class="hero-sigil">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path class="sigil-path" d="M40 4 L52 18 L68 24 L62 40 L68 56 L52 62 L40 76 L28 62 L12 56 L18 40 L12 24 L28 18 Z" stroke="#c4a96a" stroke-width="1" fill="none"/>
-        <path class="sigil-inner" d="M40 16 L48 26 L58 30 L54 40 L58 50 L48 54 L40 64 L32 54 L22 50 L26 40 L22 30 L32 26 Z" stroke="#c4a96a" stroke-width="0.5" fill="none"/>
-        <circle class="sigil-glow" cx="40" cy="40" r="3" fill="#c4a96a"/>
-        <line class="sigil-inner" x1="40" y1="16" x2="40" y2="64" stroke="#c4a96a" stroke-width="0.3" opacity="0.4"/>
-        <line class="sigil-inner" x1="22" y1="40" x2="58" y2="40" stroke="#c4a96a" stroke-width="0.3" opacity="0.4"/>
-      </svg>
-    </div>
-    <div class="hero-pretitle">A Serialized Fantasy Experience</div>
-    <h1>
-      <span class="word">A</span>
-      <span class="word">war</span>
-      <span class="word">is</span>
-      <span class="word">coming</span><br>
-      <span class="word">to</span>
-      <span class="word"><em>Valdenmarch</em></span>
-    </h1>
-    <p class="hero-sub">
-      Twelve letters. Three perspectives. One falling kingdom.<br>
-      Their stories arrive in your mailbox — the real one.
-    </p>
-    <div class="hero-cta">
-      <a href="#signup" class="btn btn-gold">Read the first letter free</a>
-      <a href="#tracks" class="btn btn-glass">See how it works ↓</a>
-    </div>
-  </div>
-  <div class="scroll-hint">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M7 10 L12 15 L17 10" stroke="currentColor"/></svg>
-  </div>
-</section>
-
-<!-- ═══ CONCEPT — SPLIT IMAGE-TEXT ═══ -->
-<section class="split reveal-section">
-  <div class="split-image">
-    <img src="images/fountain-pen.jpg" alt="Fountain pen on aged parchment with ink">
-  </div>
-  <div class="split-text">
-    <h2>The Premise</h2>
-    <p class="big-text">
-      Valdenmarch was held together by oath-magic sealed in blood and ink.
-      The oaths are failing. The kingdom is eating itself.
-      Three people on different sides of the collapse are writing letters
-      they're not sure anyone will ever read.
-      <em>You're the one who receives them.</em>
-    </p>
-  </div>
-</section>
-
-<!-- ═══ LETTER PREVIEW ═══ -->
-<section class="letter-section">
-  <div class="letter-wrap">
-    <div class="letter-paper reveal-el">
-      <div class="letter-date">7th of Ashmonth — Somewhere south of the Ridgeline</div>
-      <div class="letter-body">
-        <p>I carried the sealed dispatch to the garrison at Kelworth as instructed.
-        The commander read it in front of me, which they are not supposed to do.
-        His hands were steady but his breathing changed.</p>
-        <p>He asked me how many riders I had passed on the south road.
-        I told him: none. He said that was the wrong answer.</p>
-        <p>They billeted me in a room that overlooked the old
-        <span class="redacted">Voel foundations</span>
-        at the edge of town. I could see the black stone from the window.
-        The locals have built a market wall that runs right up to the
-        threshold and stops. Not one brick crosses the line.</p>
-        <p>I am to carry a reply back by morning. They would not tell me
-        to whom. The seal is <span class="redacted">one I don't recognize</span>.</p>
+  <section class="hero">
+    <div class="hero-bg"><img src="images/seal-parchment.jpg" alt="Wax seal on aged parchment"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-glow" id="heroGlow"></div>
+    <div class="hero-content">
+      <div class="hero-sigil">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="sigil-path"
+            d="M40 4 L52 18 L68 24 L62 40 L68 56 L52 62 L40 76 L28 62 L12 56 L18 40 L12 24 L28 18 Z" stroke="#c4a96a"
+            stroke-width="1" fill="none" />
+          <path class="sigil-inner"
+            d="M40 16 L48 26 L58 30 L54 40 L58 50 L48 54 L40 64 L32 54 L22 50 L26 40 L22 30 L32 26 Z" stroke="#c4a96a"
+            stroke-width="0.5" fill="none" />
+          <circle class="sigil-glow" cx="40" cy="40" r="3" fill="#c4a96a" />
+          <line class="sigil-inner" x1="40" y1="16" x2="40" y2="64" stroke="#c4a96a" stroke-width="0.3" opacity="0.4" />
+          <line class="sigil-inner" x1="22" y1="40" x2="58" y2="40" stroke="#c4a96a" stroke-width="0.3" opacity="0.4" />
+        </svg>
       </div>
-      <div class="letter-sig">— W.</div>
-      <img class="seal-img" src="images/wax-seal.jpg" alt="Wax seal">
+      <div class="hero-pretitle">A Serialized Fantasy Experience</div>
+      <h1><span class="word">A</span> <span class="word">war</span> <span class="word">is</span> <span
+          class="word">coming</span><br><span class="word">to</span> <span class="word"><em>Valdenmarch</em></span></h1>
+      <p class="hero-description">Twelve letters. Three perspectives. One falling kingdom.<br>Their stories arrive
+        in your mailbox &#8212; the real one.</p>
+      <div class="hero-cta-group">
+        <a href="#signup" class="btn-primary">Read the first letter free</a>
+        <a href="#tracks" class="btn-ghost">See how it works &#8595;</a>
+      </div>
     </div>
-    <p class="letter-caption">
-      Excerpt from The Witness, Letter 3.
-      <a href="#signup">Read from the beginning →</a>
-    </p>
-  </div>
-</section>
+    <div class="scroll-indicator"><svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+        <path d="M6 8 L10 12 L14 8" stroke="currentColor" />
+      </svg></div>
+  </section>
 
-<!-- ═══ PARALLAX QUOTE BREAK ═══ -->
-<div class="parallax-break">
-  <img src="images/sealed-letter.jpg" alt="Sealed letter with quill" id="parallaxImg1">
-  <div class="overlay">
-    <div class="overlay-text reveal-el">
-      "The oaths are written in blood. When the ink runs dry, the blood remembers."
-    </div>
-  </div>
-</div>
+  <div class="section-divider reveal">&#10022;</div>
+  <section class="concept reveal">
+    <h2>The Premise</h2>
+    <p class="concept-text">Valdenmarch was held together by oath-magic sealed in blood and ink. The oaths are
+      failing. The kingdom is eating itself. Three people on different sides of the collapse are writing letters
+      they're not sure anyone will ever read. <em>You're the one who receives them.</em></p>
+  </section>
 
-<!-- ═══ TRACKS ═══ -->
-<section class="tracks" id="tracks">
-  <div class="tracks-header">
-    <h2>Three Stories. One War.</h2>
-    <p>Each track follows a different character through the same events.
-       Read one, or read all three and see the full picture.</p>
-  </div>
-  <div class="tracks-grid">
-    <div class="track-card witness reveal-el" data-delay="0">
-      <div class="track-label">Free Track</div>
-      <div class="track-name">The Witness</div>
-      <div class="track-role">A cartographer mapping a kingdom that won't hold still</div>
-      <div class="track-desc">Twelve letters delivered to your inbox. A complete story — but full of doors you can't open. Sealed messages you don't get to read. Names you almost recognize. The deeper world is just out of frame.</div>
-      <div class="track-meta"><strong>12 letters</strong> · Email delivery · Always free</div>
-      <a href="#signup" class="track-cta">Start reading →</a>
+  <section class="letter-preview reveal">
+    <div class="letter-paper">
+      <div class="letter-date">7th of Ashmonth &#8212; Somewhere south of the Ridgeline</div>
+      <div class="letter-body">
+        <p>I carried the sealed dispatch to the garrison at Kelworth as instructed. The commander read it in
+          front of me, which they are not supposed to do. His hands were steady but his breathing changed.</p>
+        <p>He asked me how many riders I had passed on the south road. I told him: none. He said that was the
+          wrong answer.</p>
+        <p>They billeted me in a room that overlooked the old <span class="redacted">Voel foundations</span> at
+          the edge of town. I could see the black stone from the window. The locals have built a market wall
+          that runs right up to the threshold and stops. Not one brick crosses the line.</p>
+        <p>I am to carry a reply back by morning. They would not tell me to whom. The seal is <span class="redacted">one
+            I don't recognize</span>.</p>
+      </div>
+      <div class="letter-sig">&#8212; W.</div>
+      <div class="seal-float"><img src="images/wax-seal.jpg" alt="Wax seal"></div>
     </div>
-    <div class="track-card soldier reveal-el" data-delay="200">
-      <div class="track-label">Paid Track</div>
-      <div class="track-name">The Soldier</div>
-      <div class="track-role">A bound officer fighting a war she's no longer sure she believes in</div>
-      <div class="track-desc">Gritty, visceral, and pinned between loyalty and survival. Her letters home start as field reports and become something more desperate as the campaign turns.</div>
-      <div class="track-meta"><strong>12 letters</strong> · Physical mail on parchment stock<br>Map fragments, coded postscripts, battlefield artifacts</div>
-    </div>
-    <div class="track-card shadow reveal-el" data-delay="400">
-      <div class="track-label">Paid Track</div>
-      <div class="track-name">The Shadow</div>
-      <div class="track-role">An operative whose handler may not be who they claim</div>
-      <div class="track-desc">Tense, morally gray, and cerebral. Encoded reports to a handler who asks questions that don't quite fit. Every letter peels back a layer you're not sure you wanted to see.</div>
-      <div class="track-meta"><strong>12 letters</strong> · Physical mail on parchment stock<br>Cipher keys, sealed orders, in-world intelligence documents</div>
-    </div>
-  </div>
-</section>
+    <p class="letter-caption">Excerpt from The Witness, Letter 3. <a href="#signup">Read from the beginning
+        &#8594;</a></p>
+  </section>
 
-<div class="divider reveal-el">✦</div>
+  <div class="section-divider reveal">&#10022;</div>
+  <section class="tracks reveal" id="tracks">
+    <div class="tracks-header">
+      <h2>Three Stories. One War.</h2>
+      <p>Each track follows a different character through the same events. Read one, or read all three and see the
+        full picture.</p>
+    </div>
+    <div class="tracks-grid">
+      <div class="track-card witness" data-stagger="0">
+        <div class="track-label">Free Track</div>
+        <div class="track-name">The Witness</div>
+        <div class="track-role">A cartographer mapping a kingdom that won't hold still</div>
+        <div class="track-description">Twelve letters delivered to your inbox. A complete story &#8212; but full
+          of doors you can't open. Sealed messages you don't get to read. Names you almost recognize. The
+          deeper world is just out of frame.</div>
+        <div class="track-meta"><strong>12 letters</strong> &#183; Email delivery &#183; Always free</div><a
+          href="#signup" class="track-cta">Start reading &#8594;</a>
+      </div>
+      <div class="track-card soldier" data-stagger="1">
+        <div class="track-label">Paid Track</div>
+        <div class="track-name">The Soldier</div>
+        <div class="track-role">A bound officer fighting a war she's no longer sure she believes in</div>
+        <div class="track-description">Gritty, visceral, and pinned between loyalty and survival. Her letters
+          home start as field reports and become something more desperate as the campaign turns.</div>
+        <div class="track-meta"><strong>12 letters</strong> &#183; Physical mail on parchment stock<br>Map
+          fragments, coded postscripts, battlefield artifacts</div>
+      </div>
+      <div class="track-card shadow" data-stagger="2">
+        <div class="track-label">Paid Track</div>
+        <div class="track-name">The Shadow</div>
+        <div class="track-role">An operative whose handler may not be who they claim</div>
+        <div class="track-description">Tense, morally gray, and cerebral. Encoded reports to a handler who asks
+          questions that don't quite fit. Every letter peels back a layer you're not sure you wanted to see.
+        </div>
+        <div class="track-meta"><strong>12 letters</strong> &#183; Physical mail on parchment stock<br>Cipher
+          keys, sealed orders, in-world intelligence documents</div>
+      </div>
+    </div>
+  </section>
 
-<!-- ═══ HOW IT WORKS — WITH MANUSCRIPT BG ═══ -->
-<section class="split reverse reveal-section">
-  <div class="split-image">
-    <img src="images/manuscript.jpeg" alt="Ancient manuscript with handwritten text">
-  </div>
-  <div class="split-text">
+  <div class="section-divider reveal">&#10022;</div>
+  <section class="how-it-works reveal">
     <h2>How It Works</h2>
-    <div class="step reveal-el" data-delay="0">
+    <div class="step">
       <div class="step-num">1</div>
       <div class="step-content">
         <h3>Sign up for The Witness</h3>
-        <p>Enter your email and receive the first letter within minutes. A new letter arrives each month — a complete, standalone story that pulls you into the world of Valdenmarch.</p>
+        <p>Enter your email and receive the first letter within minutes. A new letter arrives each month &#8212;
+          a complete, standalone story that pulls you into the world of Valdenmarch.</p>
       </div>
     </div>
-    <div class="step reveal-el" data-delay="200">
+    <div class="step">
       <div class="step-num">2</div>
       <div class="step-content">
         <h3>Go deeper with paid tracks</h3>
-        <p>Subscribe to The Soldier, The Shadow, or both. Physical letters arrive monthly on parchment-style stock with in-world artifacts — map fragments, coded messages, sealed dispatches.</p>
+        <p>Subscribe to The Soldier, The Shadow, or both. Physical letters arrive monthly on parchment-style
+          stock with in-world artifacts &#8212; map fragments, coded messages, sealed dispatches.</p>
       </div>
     </div>
-    <div class="step reveal-el" data-delay="400">
+    <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
         <h3>Discover the connections</h3>
-        <p>Each track tells its own story. But read more than one and the cross-references emerge — shared events seen from different angles, background characters who turn out to be central.</p>
+        <p>Each track tells its own story. But read more than one and the cross-references emerge &#8212; shared
+          events seen from different angles, background characters who turn out to be central, details that
+          rewrite what you thought you knew.</p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="divider reveal-el">✦</div>
-
-<!-- ═══ PRICING ═══ -->
-<section class="pricing" id="pricing">
-  <div class="pricing-header">
-    <h2>Choose Your Perspective</h2>
-    <p>The Witness is always free. Paid tracks add physical mail, artifacts, and the full depth of the story.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="price-card reveal-el" data-delay="0">
-      <div class="price-tier">The Witness</div>
-      <div class="price-amount">Free</div>
-      <div class="price-period">forever</div>
-      <div class="price-features">
-        <div><span class="check">✦</span> 12 letters via email</div>
-        <div><span class="check">✦</span> Complete standalone story</div>
-        <div><span class="check">✦</span> Gateway to the full world</div>
-      </div>
-      <a href="#signup" class="btn-outline">Start Reading</a>
+  <div class="section-divider reveal">&#10022;</div>
+  <section class="pricing reveal" id="pricing">
+    <div class="pricing-header">
+      <h2>Choose Your Perspective</h2>
+      <p>The Witness is always free. Paid tracks add physical mail, artifacts, and the full depth of the story.
+      </p>
     </div>
-    <div class="price-card featured reveal-el" data-delay="200">
-      <div class="price-tier">Single Track</div>
-      <div class="price-amount"><span>$</span>99<span>/yr</span></div>
-      <div class="price-period">or $9.99/month</div>
-      <div class="price-features">
-        <div><span class="check">✦</span> 12 physical letters on parchment</div>
-        <div><span class="check">✦</span> Flat artifacts each month</div>
-        <div><span class="check">✦</span> Digital delivery included</div>
-        <div><span class="check">✦</span> Choose Soldier or Shadow</div>
+    <div class="pricing-grid">
+      <div class="price-card" data-stagger="0">
+        <div class="price-tier">The Witness</div>
+        <div class="price-amount">Free</div>
+        <div class="price-period">forever</div>
+        <div class="price-features">
+          <div><span class="check">&#10022;</span> 12 letters via email</div>
+          <div><span class="check">&#10022;</span> Complete standalone story</div>
+          <div><span class="check">&#10022;</span> Gateway to the full world</div>
+        </div><a href="#signup" class="btn-outline">Start Reading</a>
       </div>
-      <button class="btn btn-gold">Subscribe</button>
-    </div>
-    <div class="price-card reveal-el" data-delay="400">
-      <div class="price-tier">Both Tracks</div>
-      <div class="price-amount"><span>$</span>179<span>/yr</span></div>
-      <div class="price-period">save $19 vs. separate</div>
-      <div class="price-features">
-        <div><span class="check">✦</span> Soldier + Shadow physical</div>
-        <div><span class="check">✦</span> All artifacts from both tracks</div>
-        <div><span class="check">✦</span> Every cross-reference unlocked</div>
-        <div><span class="check">✦</span> The complete experience</div>
+      <div class="price-card featured" data-stagger="1">
+        <div class="price-tier">Single Track</div>
+        <div class="price-amount"><span>$</span>99<span>/yr</span></div>
+        <div class="price-period">or $9.99/month</div>
+        <div class="price-features">
+          <div><span class="check">&#10022;</span> 12 physical letters on parchment</div>
+          <div><span class="check">&#10022;</span> Flat artifacts each month</div>
+          <div><span class="check">&#10022;</span> Digital delivery included</div>
+          <div><span class="check">&#10022;</span> Choose Soldier or Shadow</div>
+        </div><button class="btn-primary">Subscribe</button>
       </div>
-      <button class="btn btn-gold">Subscribe</button>
+      <div class="price-card" data-stagger="2">
+        <div class="price-tier">Both Tracks</div>
+        <div class="price-amount"><span>$</span>179<span>/yr</span></div>
+        <div class="price-period">save $19 vs. separate</div>
+        <div class="price-features">
+          <div><span class="check">&#10022;</span> Soldier + Shadow physical</div>
+          <div><span class="check">&#10022;</span> All artifacts from both tracks</div>
+          <div><span class="check">&#10022;</span> Every cross-reference unlocked</div>
+          <div><span class="check">&#10022;</span> The complete experience</div>
+        </div><button class="btn-primary">Subscribe</button>
+      </div>
     </div>
-  </div>
-  <p class="pricing-note">Digital-only access to paid tracks available for $49/year.</p>
-</section>
+    <p class="pricing-note">Digital-only access to paid tracks available for $49/year.</p>
+  </section>
 
-<div class="divider reveal-el">✦</div>
+  <div class="section-divider reveal">&#10022;</div>
+  <section class="email-capture reveal" id="signup">
+    <h2>Enter Valdenmarch</h2>
+    <p>Sign up to receive The Witness &#8212; a free 12-letter story from the edge of a falling kingdom. Your first
+      letter arrives immediately.</p>
+    <form class="email-form" onsubmit="event.preventDefault();"><input type="email" placeholder="Your email address"
+        required><button type="submit">Send Letter 1</button></form>
+    <p class="email-privacy">No spam. Unsubscribe anytime. Just letters from a war.</p>
+  </section>
 
-<!-- ═══ EMAIL CAPTURE ═══ -->
-<section class="signup" id="signup">
-  <h2>Enter Valdenmarch</h2>
-  <p>Sign up to receive The Witness — a free 12-letter story from the edge of a falling kingdom. Your first letter arrives immediately.</p>
-  <form class="email-form" onsubmit="event.preventDefault();">
-    <input type="email" placeholder="Your email address" required>
-    <button type="submit">Send Letter 1</button>
-  </form>
-  <p class="email-note">No spam. Unsubscribe anytime. Just letters from a war.</p>
-</section>
+  <footer>
+    <div class="footer-brand">Vanguard Letters</div>
+    <div class="footer-tagline">The mailbox is the last uncontested attention channel. Put a story in it.</div>
+  </footer>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-  <div class="footer-brand">Vanguard Letters</div>
-  <div class="footer-tag">The mailbox is the last uncontested attention channel. Put a story in it.</div>
-</footer>
-
-<!-- ═══ JAVASCRIPT ═══ -->
-<script>
-// ── EMBER PARTICLE SYSTEM ──
-const canvas = document.getElementById('ember-canvas');
-const ctx = canvas.getContext('2d');
-let embers = [];
-
-function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-resize(); addEventListener('resize', resize);
-
-class Ember {
-  constructor(init) {
-    this.x = Math.random() * canvas.width;
-    this.y = init ? Math.random() * canvas.height : canvas.height + 10;
-    this.sz = Math.random() * 2.5 + 0.5;
-    this.vy = -(Math.random() * 0.5 + 0.15);
-    this.vx = (Math.random() - 0.5) * 0.25;
-    this.op = Math.random() * 0.45 + 0.1;
-    this.flk = Math.random() * 0.02 + 0.005;
-    this.off = Math.random() * Math.PI * 2;
-    this.life = 0;
-    this.max = Math.random() * 500 + 300;
-    this.hue = Math.random() > 0.6 ? 20 : 35;
-  }
-  update() {
-    this.x += this.vx + Math.sin(this.life * 0.008) * 0.12;
-    this.y += this.vy;
-    this.life++;
-    const f = Math.sin(this.life * this.flk + this.off) * 0.3 + 0.7;
-    const fi = Math.min(this.life / 50, 1);
-    const fo = Math.max((this.max - this.life) / 60, 0);
-    this.cop = this.op * f * fi * Math.min(fo, 1);
-    if (this.life > this.max || this.y < -20) { this.constructor.call(this, false); }
-  }
-  draw() {
-    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.sz * 3);
-    g.addColorStop(0, `hsla(${this.hue},70%,55%,${this.cop})`);
-    g.addColorStop(0.4, `hsla(${this.hue},60%,40%,${this.cop * 0.3})`);
-    g.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.sz * 3, 0, Math.PI * 2);
-    ctx.fillStyle = g;
-    ctx.fill();
-  }
-}
-for (let i = 0; i < 50; i++) embers.push(new Ember(true));
-(function loop() { ctx.clearRect(0, 0, canvas.width, canvas.height); embers.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(loop); })();
-
-// ── HERO WORD-BY-WORD REVEAL ──
-document.querySelectorAll('.hero h1 .word').forEach((w, i) => {
-  w.style.animation = `wordIn 0.9s cubic-bezier(0.16,1,0.3,1) ${0.9 + i * 0.15}s forwards`;
-});
-
-// ── SCROLL REVEAL SYSTEM ──
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const d = parseInt(e.target.dataset.delay || 0);
-      setTimeout(() => e.target.classList.add('visible'), d);
-    }
-  });
-}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal-el, .divider').forEach(el => io.observe(el));
-
-// ── PARALLAX ON SCROLL ──
-const parallaxImg = document.getElementById('parallaxImg1');
-const parallaxBreak = document.querySelector('.parallax-break');
-
-function updateParallax() {
-  if (!parallaxBreak) return;
-  const rect = parallaxBreak.getBoundingClientRect();
-  const vh = innerHeight;
-  if (rect.bottom > 0 && rect.top < vh) {
-    const progress = (vh - rect.top) / (vh + rect.height);
-    const offset = (progress - 0.5) * 100;
-    parallaxImg.style.transform = `translateY(${offset}px)`;
-  }
-  requestAnimationFrame(updateParallax);
-}
-updateParallax();
-
-// ── SPLIT IMAGE PARALLAX ──
-function splitParallax() {
-  document.querySelectorAll('.split-image img').forEach(img => {
-    const rect = img.parentElement.getBoundingClientRect();
-    if (rect.bottom > 0 && rect.top < innerHeight) {
-      const progress = (innerHeight - rect.top) / (innerHeight + rect.height);
-      const shift = (progress - 0.5) * 40;
-      img.style.transform = `scale(1.1) translateY(${shift}px)`;
-    }
-  });
-  requestAnimationFrame(splitParallax);
-}
-splitParallax();
-</script>
-
+  <script>
+        var c = document.getElementById('ember-canvas'), x = c.getContext('2d'), em = []; function rz() { c.width = innerWidth; c.height = innerHeight; } rz(); addEventListener('resize', rz);
+        function E(i) { this.x = Math.random() * c.width; this.y = i ? Math.random() * c.height : c.height + 10; this.s = Math.random() * 2.5 + .5; this.vy = -(Math.random() * .5 + .15); this.vx = (Math.random() - .5) * .25; this.o = Math.random() * .45 + .1; this.f = Math.random() * .02 + .005; this.p = Math.random() * Math.PI * 2; this.l = 0; this.m = Math.random() * 500 + 300; this.h = Math.random() > .6 ? 20 : 35; }
+        E.prototype.u = function () { this.x += this.vx + Math.sin(this.l * .008) * .12; this.y += this.vy; this.l++; var f = Math.sin(this.l * this.f + this.p) * .3 + .7, a = Math.min(this.l / 50, 1), b = Math.max((this.m - this.l) / 60, 0); this.c = this.o * f * a * Math.min(b, 1); if (this.l > this.m || this.y < -20) E.call(this, 0); };
+        E.prototype.d = function () { var g = x.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.s * 3); g.addColorStop(0, 'hsla(' + this.h + ',70%,55%,' + this.c + ')'); g.addColorStop(.4, 'hsla(' + this.h + ',60%,40%,' + this.c * .3 + ')'); g.addColorStop(1, 'transparent'); x.beginPath(); x.arc(this.x, this.y, this.s * 3, 0, Math.PI * 2); x.fillStyle = g; x.fill(); };
+        for (var i = 0; i < 50; i++)em.push(new E(1));
+        (function lp() { x.clearRect(0, 0, c.width, c.height); em.forEach(function (e) { e.u(); e.d(); }); requestAnimationFrame(lp); })();
+        document.querySelectorAll('.hero h1 .word').forEach(function (w, i) { w.style.animation = 'wordIn .9s cubic-bezier(.16,1,.3,1) ' + (0.9 + i * .15) + 's forwards'; });
+        var hg = document.getElementById('heroGlow'), hr = document.querySelector('.hero');
+        if (innerWidth > 820) { hr.addEventListener('mousemove', function (e) { hg.style.left = e.clientX + 'px'; hg.style.top = e.clientY + 'px'; hg.style.opacity = '1'; }); hr.addEventListener('mouseleave', function () { hg.style.opacity = '0'; }); }
+        var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); e.target.querySelectorAll('[data-stagger]').forEach(function (t) { setTimeout(function () { t.classList.add('visible'); }, parseInt(t.dataset.stagger) * 200); }); } }); }, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal,.section-divider,.track-card,.price-card').forEach(function (el) { io.observe(el); });
+  </script>
 </body>
+
 </html>
